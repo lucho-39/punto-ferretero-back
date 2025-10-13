@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block titulo %}
+API
+{% endblock titulo %}
+
+
+{% block contenido %}
+
+<h2 class="color5">Recursos de la API</h2>
+<div class="articulos unaColumna">
+    <article>
+        <p>La aplicación es consumida desde: <a href="https://github.com/..." target="_blank">Proyecto</a></p>
+        <p>Los <i>endpoints</i> de acceso creados para la misma son:</p>
+        <p>
+        <ul>
+            <li><a href="{{ url_for('api_productos') }}" target="_blank">/api/productos</a></li>
+        </ul>
+        </p>
+    </article>
+</div>
+
+
+{% endblock contenido %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+Productos
+{% endblock titulo %}
+
+{% block contenido %}
+
+<h2 class="color5">Productos disponibles en la aplicación</h2>
+<div class="articulos unaColumna">
+    <article>
+        {% if mensaje != None %}
+        <h3>{{ mensaje }}</h3>
+        {% endif %}
+        <table>
+            <thead>
+                <tr>
+                    <td class="bold">Producto</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for producto in productos %}
+                <tr>
+                    <td><a href="{{ url_for('ver_detalle', id=producto.id, tipo='producto') }}" title="Ver detalle">{{
+                            producto.id }}</a></td>
+                    <td>{{ producto.art }}</td>
+                    <td>{{ producto.cod }}</td>
+                    <td>{{ producto.tit }}</td>
+                    <td>{{ producto.desc }}</td>
+                    <td>{{ producto.prov_id }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </article>
+    <div class="crear">
+        <a href="{{ url_for('crear', tipo='producto') }}" class="menuSPA color2">Crear producto</a>
+    </div>
+</div>
+
+{% endblock contenido %}

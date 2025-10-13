@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Sitio modelo de plataforma educativa, diseñado para la implementación del material visto durante el curso Python Fullstack del programa Codo a codo." />
+    <meta name="author" content="Luciano Santa Cruz" />
+    <meta name="keywords" content="educación, desarrollo web, frontend, backend, API-REST, MVT, MVC">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='./icon/laptop-code-solid.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='./css/estilos.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='./css/fuentes.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='./css/colores.css') }}">
+    <title>
+        {% block titulo %}
+        Administración
+        {% endblock titulo %}
+    </title>
+</head>
+
+<body class="color3">
+    <header class="color1">
+        <h1><a href="{{ url_for('inicio') }}">Administración</a></h1>
+        <nav>
+            <img class="menuBurger" src="{{ url_for('static', filename='./media/icon/bars-solid.svg') }}"
+                alt="Ménu para dispositivos móviles" title="Menú">
+            <div id="menuPpal" class="oculto visibleH">
+                <a href="{{ url_for('productos') }}" class="menuSPA color1">Productos</a>
+            </div>
+        </nav>
+    </header>
+    <main class="color3">
+        <section id="contenidoSPA">
+            <!-- Contenido dinámico -->
+            {% block contenido %}
+            <h2 class="color5">Acerca del Proyecto</h2>
+            <div class="articulos unaColumna">
+                <article>
+                    <p>Este sitio fué desarrollado como guía para <b>Punto Ferretero</b>
+                    <p>Información disponible y funcionalidad:</p>
+                    <ul>
+                        <li>- Sitio simil «back office»;</li>
+                        <li>- API pública y con conexión para el frontend desarrollado.</li>
+                    </ul>
+                </article>
+            </div>
+            {% endblock contenido %}
+        </section>
+    </main>
+    <div>
+        <a href="https://github.com/..." target="_blank"><img
+                src="{{ url_for ('static', filename='./media/img/enlacesIco/GitHub.png') }}" class="logoFijo"
+                alt="Link a código fuente" title="Ver código fuente"></a>
+    </div>
+    <footer class="color1">
+        <p>Sitio sin licencia - 2025</p>
+        <p>Creado por Luciano Santa Cruz</p>
+        <p>
+            <a class="linksCH logo" href="https://....pythonanywhere.com/" target="_blank">
+                <img src="{{ url_for('static', filename='./media/img/enlacesIco/enlace-web.png') }}" alt="WebSite"
+                    class="logo">
+            </a>
+            <a class="linksCH logo" href="https://github.com/..." target="_blank">
+                <img src="{{ url_for('static', filename='./media/img/enlacesIco/githubIco.png') }}" alt="GitHub"
+                    class="logo">
+            </a>
+            <a class="linksCH logo" href="https://www.linkedin.com/..." target="_blank">
+                <img src="{{ url_for('static', filename='./media/img/enlacesIco/linkedin.png') }}" alt="LinkedIn"
+                    class="logo">
+            </a>
+        </p>
+    </footer>
+
+    {% block js %}
+
+    <script src="{{ url_for('static', filename='./js/main.js') }}" type="module"></script>
+
+    {% endblock js %}
+</body>
+
+</html>
