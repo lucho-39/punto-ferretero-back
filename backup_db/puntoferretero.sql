@@ -74,9 +74,9 @@ CREATE TABLE IF NOT EXISTS product (
   `cod` VARCHAR(10) DEFAULT NULL,
   `tit` VARCHAR(50) DEFAULT NULL,
   `desc` VARCHAR(200) DEFAULT NULL,
-  `cat_id` INT(11) NOT NULL,
-  `img_id` INT(11) NOT NULL,
-  `prov_id` INT(11) NOT NULL,
+  `cat_id` INT(11) DEFAULT NULL,
+  `img_id` INT(11) DEFAULT NULL,
+  `prov_id` INT(11) DEFAULT NULL,
   `rating` VARCHAR(50) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `cat_id` (`cat_id`),
@@ -89,6 +89,6 @@ CREATE TABLE IF NOT EXISTS product (
 
 LOCK TABLES `product` WRITE;
 INSERT INTO `product` (`id`, `art`, `cod`, `tit`, `desc`, `cat_id`, `img_id`, `prov_id`, `rating`) VALUES 
-(1, '1000', '1000', 'Producto Inicial de Pruebas', 'Descripcion pendiente...', 1, 1, 1, 'Rating cero'),
-(2, '1001', '1001', 'Segundo Producto de Pruebas', 'Descripcion del segundo producto.', 1, 1, 1, 'Rating cero');
+(1, '1001', '1001', 'Producto Inicial de Pruebas', 'Descripcion pendiente...', 1, 1, 1, 'Rating cero'),
+(2, '1002', '1002', 'Segundo Producto de Pruebas', 'Descripcion del segundo producto.', 1, 1, 1, 'Rating cero');
 UNLOCK TABLES;
