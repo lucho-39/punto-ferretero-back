@@ -13,13 +13,26 @@ from componentes.modelos import Producto
 
 
 def registrar_rutas_web(app):
-    app.config['UPLOAD_FOLDER'] = '/'
+    app.config['UPLOAD_FOLDER'] = './uploads'  # Cambiado de '/' por seguridad
     app.config['ALLOWED_EXTENSIONS'] = {'xlsx', 'xls'}
 
     def allowed_file(filename):
         return '.' in filename and \
                filename.rsplit('.', 1)[1].lower(
                ) in app.config['ALLOWED_EXTENSIONS']
+
+    # Función helper para manejar plurales correctamente
+    def pluralizar(tipo):
+        """
+        Convierte el nombre del tipo singular al plural correcto para las rutas
+        """
+        plurales = {
+            "producto": "productos",
+            "categoria": "categorias",
+            "proveedor": "proveedores",
+            "imagen": "imagenes"
+        }
+        return plurales.get(tipo, tipo + "s")
 
     @app.route('/subir', methods=['GET', 'POST'])
     def subir_productos():
@@ -33,6 +46,10 @@ def registrar_rutas_web(app):
                 return redirect(request.url)
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
+                
+                # Crear directorio si no existe
+                os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+                
                 filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(filepath)
                 try:
@@ -166,7 +183,8 @@ def registrar_rutas_web(app):
     def productos(mensaje=None):
         productos = Producto.obtener()
         for producto in productos:
-            producto.cat_id = Categoria.obtener('id', producto.cat_id).name
+            categoria = Categoria.obtener('id', producto.cat_id)
+            producto.cat_id = categoria.name if categoria else None
         return render_template('./modelos/productos.html', productos=productos, mensaje=mensaje)
     
     @app.route('/proveedores')
@@ -192,7 +210,7 @@ def registrar_rutas_web(app):
     @app.route('/<id>/<tipo>/eliminar')
     def eliminar(id, tipo):
         respuesta = tablas[tipo].eliminar(id)
-        return redirect(url_for(tipo + "s", mensaje=respuesta))
+        return redirect(url_for(pluralizar(tipo), mensaje=respuesta))
 
     @app.route('/<id>/<tipo>/modificar', methods=['POST'])
     def modificar(id, tipo):
@@ -200,7 +218,7 @@ def registrar_rutas_web(app):
             datos = dict(request.form)
             datos['id'] = id
             respuesta = tablas[tipo].modificar(datos)
-        return redirect(url_for(tipo + "s", mensaje=respuesta))
+        return redirect(url_for(pluralizar(tipo), mensaje=respuesta))
 
     @app.route('/<tipo>/crear', methods=['GET', 'POST'])
     def crear(tipo):
@@ -208,7 +226,7 @@ def registrar_rutas_web(app):
             datos = dict(request.form).values()
             nvo_registro = tablas[tipo](*list(datos))
             respuesta = nvo_registro.guardar_db()
-            return redirect(url_for(tipo + "s", mensaje=respuesta))
+            return redirect(url_for(pluralizar(tipo), mensaje=respuesta))
         modelo = tablas[tipo].campos[1:]
         return render_template('./modelos/crud/crear.html', tipo=tipo, modelo=modelo)
 
