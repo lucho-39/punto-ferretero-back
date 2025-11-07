@@ -88,15 +88,9 @@ def registrar_rutas_web(app):
                             nuevo_proveedor = Proveedor(
                                 None, None, prov_name, None)
                             prov_id = nuevo_proveedor.guardar_db()
-                            # validar retorno: puede ser id numérico o un mensaje de error
-                            if isinstance(prov_id, str):
-                                if prov_id.isdigit():
-                                    prov_id = int(prov_id)
-                                else:
-                                    app.logger.error(
-                                        f"Error al crear proveedor '{prov_name}': {prov_id}")
-                                    continue
-                            if not prov_id:
+                            
+                            # guardar_db() ahora retorna int (id) o False
+                            if not prov_id or not isinstance(prov_id, int):
                                 app.logger.error(
                                     f"No se pudo crear el proveedor: {prov_name}")
                                 continue
@@ -122,17 +116,9 @@ def registrar_rutas_web(app):
                         nuevo_producto = Producto(
                             None, art, cod, tit, desc, None, None, prov_id, None)
                         producto_id = nuevo_producto.guardar_db()
-                        app.logger.debug(
-                            f"Intento guardar producto '{tit}' -> id retornado: {producto_id}")
-                        # validar retorno: id numérico o mensaje de error
-                        if isinstance(producto_id, str):
-                            if producto_id.isdigit():
-                                producto_id = int(producto_id)
-                            else:
-                                app.logger.error(
-                                    f"Error al crear producto '{tit}' (cod:{cod}): {producto_id}")
-                                continue
-                        if not producto_id:
+                        
+                        # guardar_db() ahora retorna int (id) o False
+                        if not producto_id or not isinstance(producto_id, int):
                             app.logger.error(
                                 f"No se obtuvo ID al guardar producto: {tit} (cod: {cod})")
                             continue
@@ -203,9 +189,17 @@ def registrar_rutas_web(app):
 
     @app.route('/<id>/<tipo>/detalle')
     def ver_detalle(id, tipo):
-        return render_template("./modelos/crud/detalle.html",
-                               datos=tablas[tipo].obtener('id', id),
-                               tipo=tipo)
+        datos = tablas[tipo].obtener('id', id)
+        
+        # Si es un producto, pasar las listas de relaciones para los selects
+        contexto = {'datos': datos, 'tipo': tipo}
+        
+        if tipo == 'producto':
+            contexto['categorias'] = Categoria.obtener()
+            contexto['proveedores'] = Proveedor.obtener()
+            contexto['imagenes'] = Imagen.obtener()
+        
+        return render_template("./modelos/crud/detalle.html", **contexto)
 
     @app.route('/<id>/<tipo>/eliminar')
     def eliminar(id, tipo):
@@ -217,16 +211,56 @@ def registrar_rutas_web(app):
         if request.method == 'POST':
             datos = dict(request.form)
             datos['id'] = id
-            respuesta = tablas[tipo].modificar(datos)
-        return redirect(url_for(pluralizar(tipo), mensaje=respuesta))
+            
+            # Validar relaciones para Producto antes de modificar
+            if tipo == 'producto':
+                # Validar categoría
+                if 'cat_id' in datos and datos['cat_id']:
+                    categoria = Categoria.obtener('id', datos['cat_id'])
+                    if not categoria:
+                        mensaje = f'Error: La categoría con ID {datos["cat_id"]} no existe.'
+                        return redirect(url_for(pluralizar(tipo), mensaje=mensaje))
+                
+                # Validar proveedor
+                if 'prov_id' in datos and datos['prov_id']:
+                    proveedor = Proveedor.obtener('id', datos['prov_id'])
+                    if not proveedor:
+                        mensaje = f'Error: El proveedor con ID {datos["prov_id"]} no existe.'
+                        return redirect(url_for(pluralizar(tipo), mensaje=mensaje))
+                
+                # Validar imagen
+                if 'img_id' in datos and datos['img_id']:
+                    imagen = Imagen.obtener('id', datos['img_id'])
+                    if not imagen:
+                        mensaje = f'Error: La imagen con ID {datos["img_id"]} no existe.'
+                        return redirect(url_for(pluralizar(tipo), mensaje=mensaje))
+            
+            resultado = tablas[tipo].modificar(datos)
+            
+            # Convertir el resultado booleano/string a mensaje
+            if resultado and resultado != 'No se pudo modificar el registro.':
+                mensaje = 'Modificación exitosa.'
+            else:
+                mensaje = 'No se pudo modificar el registro.'
+                
+        return redirect(url_for(pluralizar(tipo), mensaje=mensaje))
 
     @app.route('/<tipo>/crear', methods=['GET', 'POST'])
     def crear(tipo):
         if request.method == 'POST':
             datos = dict(request.form).values()
             nvo_registro = tablas[tipo](*list(datos))
-            respuesta = nvo_registro.guardar_db()
-            return redirect(url_for(pluralizar(tipo), mensaje=respuesta))
+            resultado = nvo_registro.guardar_db()
+            
+            # Convertir el ID numérico a mensaje de éxito
+            if resultado and isinstance(resultado, int):
+                mensaje = f'Creación exitosa. ID: {resultado}'
+            elif resultado is False:
+                mensaje = 'No se pudo crear el registro.'
+            else:
+                mensaje = str(resultado)
+                
+            return redirect(url_for(pluralizar(tipo), mensaje=mensaje))
         modelo = tablas[tipo].campos[1:]
         return render_template('./modelos/crud/crear.html', tipo=tipo, modelo=modelo)
 

@@ -17,7 +17,7 @@ class Imagen(Tabla):
 
     tabla = 'image'
     conexion = conexion
-    campos = ('id', 'url_img', 'texto_alt')
+    campos = ('id', 'url_img', 'txt_alt')
 
     def __init__(self, *args, de_bbdd=False):
         super().crear(args, de_bbdd)
