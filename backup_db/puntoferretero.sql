@@ -5,6 +5,8 @@ CREATE TABLE IF NOT EXISTS category (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(50) DEFAULT NULL,
   `unit` VARCHAR(50) DEFAULT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -34,13 +36,15 @@ CREATE TABLE IF NOT EXISTS image (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `url_img` VARCHAR(80) DEFAULT NULL,
   `txt_alt` VARCHAR(60) DEFAULT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 LOCK TABLES `image` WRITE;
 INSERT INTO `image` (`id`, `url_img`, `txt_alt`) VALUES 
-(1, 'https://', 'Una imagen de pruebas'),
-(2, 'https://', 'Otra imagen de pruebas');
+(1, 'https://cdn.pixabay.com/photo/2014/02/24/15/37/cross-screw-273655_1280.jpg', 'Una imagen de pruebas'),
+(2, 'https://cdn.pixabay.com/photo/2024/05/27/20/08/technical-8792190_1280.jpg', 'Otra imagen de pruebas');
 UNLOCK TABLES;
 
 CREATE TABLE IF NOT EXISTS prov (
@@ -48,6 +52,8 @@ CREATE TABLE IF NOT EXISTS prov (
   `cod` VARCHAR(10) DEFAULT NULL,
   `name` VARCHAR(50) DEFAULT NULL,
   `obs` VARCHAR(50) DEFAULT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -70,14 +76,16 @@ UNLOCK TABLES;
 
 CREATE TABLE IF NOT EXISTS product (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `art` VARCHAR(10) DEFAULT NULL,
-  `cod` VARCHAR(10) DEFAULT NULL,
+  `art` VARCHAR(10) DEFAULT NULL COMMENT 'Código de artículo del sistema actual (opcional)',
+  `cod` VARCHAR(10) DEFAULT NULL COMMENT 'Código del proveedor (opcional)',
   `tit` VARCHAR(50) DEFAULT NULL,
   `desc` VARCHAR(200) DEFAULT NULL,
   `cat_id` INT(11) DEFAULT NULL,
   `img_id` INT(11) DEFAULT NULL,
   `prov_id` INT(11) DEFAULT NULL,
   `rating` VARCHAR(50) DEFAULT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `cat_id` (`cat_id`),
   KEY `img_id` (`img_id`),

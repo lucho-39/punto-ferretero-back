@@ -183,7 +183,7 @@ div ul .checkBox {
 
 table {
   width: 100%;
-  border-bottom-style: 1px solid black;
+  border-bottom: 1px solid black;
 }
 
 th,

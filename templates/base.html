@@ -26,7 +26,10 @@
             <img class="menuBurger" src="{{ url_for('static', filename='./media/icon/bars-solid.svg') }}"
                 alt="Ménu para dispositivos móviles" title="Menú">
             <div id="menuPpal" class="oculto visibleH">
+                <a href="{{ url_for('categorias') }}" class="menuSPA color1">Categorías</a>
+                <a href="{{ url_for('imagenes') }}" class="menuSPA color1">Imágenes</a>
                 <a href="{{ url_for('productos') }}" class="menuSPA color1">Productos</a>
+                <a href="{{ url_for('proveedores') }}" class="menuSPA color1">Proveedores</a>
             </div>
         </nav>
     </header>
@@ -48,28 +51,10 @@
             {% endblock contenido %}
         </section>
     </main>
-    <div>
-        <a href="https://github.com/..." target="_blank"><img
-                src="{{ url_for ('static', filename='./media/img/enlacesIco/GitHub.png') }}" class="logoFijo"
-                alt="Link a código fuente" title="Ver código fuente"></a>
-    </div>
+
     <footer class="color1">
         <p>Sitio sin licencia - 2025</p>
         <p>Creado por Luciano Santa Cruz</p>
-        <p>
-            <a class="linksCH logo" href="https://....pythonanywhere.com/" target="_blank">
-                <img src="{{ url_for('static', filename='./media/img/enlacesIco/enlace-web.png') }}" alt="WebSite"
-                    class="logo">
-            </a>
-            <a class="linksCH logo" href="https://github.com/..." target="_blank">
-                <img src="{{ url_for('static', filename='./media/img/enlacesIco/githubIco.png') }}" alt="GitHub"
-                    class="logo">
-            </a>
-            <a class="linksCH logo" href="https://www.linkedin.com/..." target="_blank">
-                <img src="{{ url_for('static', filename='./media/img/enlacesIco/linkedin.png') }}" alt="LinkedIn"
-                    class="logo">
-            </a>
-        </p>
     </footer>
 
     {% block js %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+    Categorías
+{% endblock titulo %}
+
+
+{% block contenido %}
+
+<h2 class="color5">CATEGORÍAS DE PRODUCTOS</h2>
+<div class="articulos unaColumna">
+    <article>
+        {% if mensaje %}
+            <h3>{{ mensaje }}</h3>
+        {% endif %}
+        <table>
+            <thead>
+                <tr>
+                    <td class="bold">Categoría ID</td>
+                    <td class="bold">Categoría nombre</td>
+                    <td class="bold">Categoría unidad</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for categoria in categorias %}
+                <tr>
+                    <td><a href="{{ url_for('ver_detalle', id=categoria.id, tipo='categoria') }}" title="Ver detalle">{{
+                            categoria.id }}</a></td>
+                    <td><a href="{{ url_for('ver_detalle', id=categoria.id, tipo='categoria') }}" title="Ver detalle">{{
+                            categoria.name }}</a></td>
+                    <td><a href="{{ url_for('ver_detalle', id=categoria.id, tipo='categoria') }}" title="Ver detalle">{{
+                            categoria.unit }}</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </article>
+    <div class="crear">
+        <a href="{{ url_for('crear', tipo='categoria') }}" class="menuSPA color2">Crear categoría</a>
+    </div>
+</div>
+
+{% endblock contenido %}

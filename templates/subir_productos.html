@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+Subir Productos
+{% endblock titulo %}
+
+{% block contenido %}
+
+<h2 class="color5">Importar productos desde archivo Excel</h2>
+<div class="articulos unaColumna">
+    <article>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="mensajes">
+            {% for message in messages %}
+            <p class="error">{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <p>Selecciona un archivo Excel (.xlsx o .xls) con los datos de los productos a importar.</p>
+        <p><strong>Columnas esperadas:</strong></p>
+        <ul>
+            <li><strong>Proveedor</strong> (o proveedor, prov): Nombre del proveedor</li>
+            <li><strong>Articulo</strong> (o articulo, art): Código del artículo (opcional)</li>
+            <li><strong>Codigo</strong> (o codigo, cod): Código del producto (opcional)</li>
+            <li><strong>Descripcion</strong> (o descripcion, desc): Descripción del producto</li>
+        </ul>
+
+        <form method="POST" enctype="multipart/form-data">
+            <input type="file" name="file" accept=".xlsx,.xls" required>
+            <input type="submit" value="Subir Archivo">
+        </form>
+    </article>
+    <div class="crear">
+        <a href="{{ url_for('productos') }}" class="menuSPA color2">Volver a Productos</a>
+    </div>
+</div>
+
+{% endblock contenido %}

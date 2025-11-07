@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+    Proveedores
+{% endblock titulo %}
+
+{% block contenido %}
+
+<h2 class="color5">PROVEEDORES DE PRODUCTOS</h2>
+<div class="articulos unaColumna">
+    <article>
+        {% if mensaje %}
+            <h3>{{ mensaje }}</h3>
+        {% endif %}
+        <table>
+            <thead>
+                <tr>
+                    <td class="bold">Proveedor ID</td>
+                    <td class="bold">Código</td>
+                    <td class="bold">Nombre</td>
+                    <td class="bold">Observaciones</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for proveedor in proveedores %}
+                <tr>
+                    <td><a href="{{ url_for('ver_detalle', id=proveedor.id, tipo='proveedor') }}" title="Ver detalle">{{ proveedor.id }}</a></td>
+                    <td><a href="{{ url_for('ver_detalle', id=proveedor.id, tipo='proveedor') }}" title="Ver detalle">{{ proveedor.cod }}</a></td>
+                    <td><a href="{{ url_for('ver_detalle', id=proveedor.id, tipo='proveedor') }}" title="Ver detalle">{{ proveedor.name }}</a></td>
+                    <td><a href="{{ url_for('ver_detalle', id=proveedor.id, tipo='proveedor') }}" title="Ver detalle">{{ proveedor.obs }}</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </article>
+    <div class="crear">
+        <a href="{{ url_for('crear', tipo='proveedor') }}" class="menuSPA color2">Crear proveedor</a>
+    </div>
+</div>
+
+{% endblock contenido %}

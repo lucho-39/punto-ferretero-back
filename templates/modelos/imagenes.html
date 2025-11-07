@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+    Imágenes
+{% endblock titulo %}
+
+
+{% block contenido %}
+
+<h2 class="color5">IMÁGENES DE PRODUCTOS</h2>
+<div class="articulos unaColumna">
+    <article>
+        {% if mensaje %}
+            <h3>{{ mensaje }}</h3>
+        {% endif %}
+        <table>
+            <thead>
+                <tr>
+                    <td class="bold">Imagen ID</td>
+                    <td class="bold">Imagen URL</td>
+                    <td class="bold">Imagen Texto</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for imagen in imagenes %}
+                <tr>
+                    <td><a href="{{ url_for('ver_detalle', id=imagen.id, tipo='imagen') }}" title="Ver detalle">{{
+                            imagen.id }}</a></td>
+                    <td><a href="{{ url_for('ver_detalle', id=imagen.id, tipo='imagen') }}" title="Ver detalle">{{
+                            imagen.url_img }}</a></td>
+                    <td><a href="{{ url_for('ver_detalle', id=imagen.id, tipo='imagen') }}" title="Ver detalle">{{
+                            imagen.txt_alt }}</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </article>
+    <div class="crear">
+        <a href="{{ url_for('crear', tipo='imagen') }}" class="menuSPA color2">Crear imagen</a>
+    </div>
+</div>
+
+{% endblock contenido %}

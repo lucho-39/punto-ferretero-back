@@ -6,7 +6,7 @@ Productos
 
 {% block contenido %}
 
-<h2 class="color5">Productos disponibles en la aplicación</h2>
+<h2 class="color5">PRODUCTOS EN BASE DE DATOS</h2>
 <div class="articulos unaColumna">
     <article>
         {% if mensaje != None %}
@@ -15,7 +15,14 @@ Productos
         <table>
             <thead>
                 <tr>
-                    <td class="bold">Producto</td>
+                    <td class="bold">Producto ID</td>
+                    <td class="bold">Nro Artículo</td>
+                    <td class="bold">Nro Código</td>
+                    <td class="bold">Título</td>
+                    <td class="bold">Descripción</td>
+                    <td class="bold">Categoría</td>
+                    <td class="bold">Imagen ID</td>
+                    <td class="bold">Proveedor ID</td>
                 </tr>
             </thead>
             <tbody>
@@ -23,11 +30,20 @@ Productos
                 <tr>
                     <td><a href="{{ url_for('ver_detalle', id=producto.id, tipo='producto') }}" title="Ver detalle">{{
                             producto.id }}</a></td>
-                    <td>{{ producto.art }}</td>
-                    <td>{{ producto.cod }}</td>
-                    <td>{{ producto.tit }}</td>
-                    <td>{{ producto.desc }}</td>
-                    <td>{{ producto.prov_id }}</td>
+                    <td><a href="{{ url_for('ver_detalle', id=producto.id, tipo='producto') }}" title="Ver detalle">{{
+                            producto.art }}</a></td>
+                    <td><a href="{{ url_for('ver_detalle', id=producto.id, tipo='producto') }}" title="Ver detalle">{{
+                            producto.cod }}</a></td>
+                    <td><a href="{{ url_for('ver_detalle', id=producto.id, tipo='producto') }}" title="Ver detalle">{{
+                            producto.tit }}</a></td>
+                    <td><a href="{{ url_for('ver_detalle', id=producto.id, tipo='producto') }}" title="Ver detalle">{{
+                            producto.desc }}</a></td>
+                    <td><a href="{{ url_for('ver_detalle', id=producto.id, tipo='producto') }}" title="Ver detalle">{{
+                            producto.cat_id }}</a></td>
+                    <td><a href="{{ url_for('ver_detalle', id=producto.id, tipo='producto') }}" title="Ver detalle">{{
+                            producto.img_id }}</a></td>
+                    <td><a href="{{ url_for('ver_detalle', id=producto.id, tipo='producto') }}" title="Ver detalle">{{
+                            producto.prov_id }}</a></td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -35,6 +51,7 @@ Productos
     </article>
     <div class="crear">
         <a href="{{ url_for('crear', tipo='producto') }}" class="menuSPA color2">Crear producto</a>
+        <a href="{{ url_for('subir_productos') }}" class="menuSPA color2">Subir archivo</a>
     </div>
 </div>
 
