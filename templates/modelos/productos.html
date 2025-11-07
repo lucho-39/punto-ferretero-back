@@ -19,7 +19,6 @@ Productos
                     <td class="bold">Nro Artículo</td>
                     <td class="bold">Nro Código</td>
                     <td class="bold">Título</td>
-                    <td class="bold">Descripción</td>
                     <td class="bold">Categoría</td>
                     <td class="bold">Imagen ID</td>
                     <td class="bold">Proveedor ID</td>
@@ -36,8 +35,6 @@ Productos
                             producto.cod }}</a></td>
                     <td><a href="{{ url_for('ver_detalle', id=producto.id, tipo='producto') }}" title="Ver detalle">{{
                             producto.tit }}</a></td>
-                    <td><a href="{{ url_for('ver_detalle', id=producto.id, tipo='producto') }}" title="Ver detalle">{{
-                            producto.desc }}</a></td>
                     <td><a href="{{ url_for('ver_detalle', id=producto.id, tipo='producto') }}" title="Ver detalle">{{
                             producto.cat_id }}</a></td>
                     <td><a href="{{ url_for('ver_detalle', id=producto.id, tipo='producto') }}" title="Ver detalle">{{
