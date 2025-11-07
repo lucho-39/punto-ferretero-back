@@ -1,5 +1,9 @@
 import logging
 
+# Configurar logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+
 
 class Tabla:
 
@@ -34,15 +38,22 @@ class Tabla:
         consulta = f"INSERT INTO {self.tabla} ({cols_sql}) VALUES ({placeholders});"
         datos = tuple(getattr(self, c) for c in cols)
 
+        logger.debug(f"guardar_db() - Consulta: {consulta}")
+        logger.debug(f"guardar_db() - Datos: {datos}")
+
         rta_db = self.__conectar(consulta, datos)
 
-        # __conectar devuelve el last_id (int) o False; si devuelve True lo consideramos fallo aquí
+        # __conectar devuelve el last_id (int) o False
         if rta_db is False or isinstance(rta_db, bool):
+            logger.error(f"guardar_db() falló para tabla {self.tabla}")
             return False
 
         try:
-            return int(rta_db)
-        except Exception:
+            id_retorno = int(rta_db)
+            logger.info(f"guardar_db() exitoso - ID: {id_retorno}")
+            return id_retorno
+        except Exception as e:
+            logger.error(f"Error convirtiendo resultado a int: {e}")
             return False
 
     @classmethod
@@ -66,6 +77,7 @@ class Tabla:
     @classmethod
     def eliminar(cls, id):
         consulta = f"DELETE FROM {cls.tabla} WHERE id = %s ;"
+        logger.debug(f"eliminar() - Consulta: {consulta}, ID: {id}")
         rta_db = cls.__conectar(consulta, (id,))
 
         if rta_db:
@@ -81,17 +93,30 @@ class Tabla:
         id_val = registro.pop('id')
         id_val = int(id_val) if type(id_val) != int else id_val
 
-        campos = list(registro.keys())
-        set_q += ", ".join(f"{c} = %s" for c in campos)
+        # Filtrar solo los campos que existen en la tabla
+        campos_validos = [c for c in registro.keys() if c in cls.campos]
+        
+        if not campos_validos:
+            logger.error(f"modificar() - No hay campos válidos para actualizar en {cls.tabla}")
+            logger.error(f"Campos recibidos: {list(registro.keys())}")
+            logger.error(f"Campos de la tabla: {cls.campos}")
+            return 'No se pudo modificar el registro.'
+
+        set_q += ", ".join(f"`{c}` = %s" for c in campos_validos)
         where_q = f" WHERE id = %s;"
         consulta = update_q + set_q + where_q
-        nvos_datos = tuple(list(registro.values()) + [id_val])
+        nvos_datos = tuple([registro[c] for c in campos_validos] + [id_val])
+        
+        logger.debug(f"modificar() - Consulta: {consulta}")
+        logger.debug(f"modificar() - Datos: {nvos_datos}")
+        logger.debug(f"modificar() - Campos actualizados: {campos_validos}")
+        
         rta_db = cls.__conectar(consulta, nvos_datos)
 
         if rta_db:
             return 'Modificación exitosa.'
-
-        return 'No se pudo modificar el registro.'
+        else:
+            return 'No se pudo modificar el registro. Verifique que las relaciones (IDs) existan.'
 
     @classmethod
     def __conectar(cls, consulta, datos=None):
@@ -110,7 +135,7 @@ class Tabla:
                 cls.conexion.connect()
                 cursor = cls.conexion.cursor()
             except Exception as e:
-                logging.exception("")
+                logger.exception("No se pudo obtener cursor")
                 return False
 
         try:
@@ -145,7 +170,7 @@ class Tabla:
                     try:
                         cls.conexion.commit()
                     except Exception:
-                        logging.exception("Error en commit después de INSERT")
+                        logger.exception("Error en commit después de INSERT")
 
                     cursor.close()
                     return last_id if last_id is not None else True
@@ -155,13 +180,13 @@ class Tabla:
                     try:
                         cls.conexion.commit()
                     except Exception:
-                        logging.exception(
+                        logger.exception(
                             "Error en commit después de UPDATE/DELETE")
                     cursor.close()
                     return True
 
         except Exception:
-            logging.exception("Error ejecutando consulta SQL")
+            logger.exception("Error ejecutando consulta SQL")
             try:
                 cls.conexion.rollback()
             except Exception:
