@@ -90,9 +90,9 @@ CREATE TABLE IF NOT EXISTS product (
   KEY `cat_id` (`cat_id`),
   KEY `img_id` (`img_id`),
   KEY `prov_id` (`prov_id`),
-  CONSTRAINT `product_ibfk_1` FOREIGN KEY (`cat_id`) REFERENCES `category` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `product_ibfk_2` FOREIGN KEY (`img_id`) REFERENCES `image` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `product_ibfk_3` FOREIGN KEY (`prov_id`) REFERENCES `prov` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `product_ibfk_1` FOREIGN KEY (`cat_id`) REFERENCES `category` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `product_ibfk_2` FOREIGN KEY (`img_id`) REFERENCES `image` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `product_ibfk_3` FOREIGN KEY (`prov_id`) REFERENCES `prov` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 LOCK TABLES `product` WRITE;
