@@ -15,20 +15,17 @@ Productos
         <table>
             <thead>
                 <tr>
-                    <td class="bold">Producto ID</td>
                     <td class="bold">Nro Artículo</td>
                     <td class="bold">Nro Código</td>
                     <td class="bold">Título</td>
                     <td class="bold">Categoría</td>
                     <td class="bold">Imagen ID</td>
-                    <td class="bold">Proveedor ID</td>
+                    <td class="bold">Cod Proveedor</td>
                 </tr>
             </thead>
             <tbody>
                 {% for producto in productos %}
                 <tr>
-                    <td><a href="{{ url_for('ver_detalle', id=producto.id, tipo='producto') }}" title="Ver detalle">{{
-                            producto.id }}</a></td>
                     <td><a href="{{ url_for('ver_detalle', id=producto.id, tipo='producto') }}" title="Ver detalle">{{
                             producto.art }}</a></td>
                     <td><a href="{{ url_for('ver_detalle', id=producto.id, tipo='producto') }}" title="Ver detalle">{{
