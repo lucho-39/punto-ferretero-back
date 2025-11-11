@@ -9,15 +9,53 @@ Subir Productos
 <h2 class="color5">Importar productos desde archivo Excel</h2>
 <div class="articulos unaColumna">
     <article>
-        {% with messages = get_flashed_messages() %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         <div class="mensajes">
-            {% for message in messages %}
-            <p class="error">{{ message }}</p>
+            {% for category, message in messages %}
+            <p class="{{ category }}">{{ message }}</p>
             {% endfor %}
         </div>
         {% endif %}
         {% endwith %}
+
+        {% if productos_duplicados %}
+        <div class="duplicados">
+            <h3 class="color5">Productos Duplicados Detectados</h3>
+            <p>Los siguientes productos ya existen en la base de datos y no fueron importados:</p>
+            <table>
+                <thead>
+                    <tr>
+                        <td class="bold">Fila Excel</td>
+                        <td class="bold">Artículo</td>
+                        <td class="bold">Código</td>
+                        <td class="bold">Descripción</td>
+                        <td class="bold">Proveedor</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for duplicado in productos_duplicados %}
+                    <tr>
+                        <td>{{ duplicado.fila }}</td>
+                        <td>{{ duplicado.art }}</td>
+                        <td>{{ duplicado.cod }}</td>
+                        <td>{{ duplicado.desc }}</td>
+                        <td>{{ duplicado.proveedor }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <br>
+        {% endif %}
+
+        {% if productos_importados %}
+        <div class="exito">
+            <h3 class="color5">✅ Importación Exitosa</h3>
+            <p>Se importaron <strong>{{ productos_importados }}</strong> productos correctamente.</p>
+        </div>
+        <br>
+        {% endif %}
 
         <p>Selecciona un archivo Excel (.xlsx o .xls) con los datos de los productos a importar.</p>
         <p><strong>Columnas esperadas:</strong></p>

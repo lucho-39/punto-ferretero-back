@@ -76,6 +76,7 @@ def registrar_rutas_web(app):
 
                     productos_importados = 0
                     productos_confirmados = []
+                    productos_duplicados = []  # Lista para almacenar productos duplicados
                     errores = []
                     
                     # Buscar o crear categoría por defecto "Sin categoría"
@@ -211,6 +212,30 @@ def registrar_rutas_web(app):
                                         errores.append(f"Fila {row_num}: No se pudo crear la imagen '{img_url}'")
                                         img_id = None
 
+                            # ========== VERIFICACIÓN DE DUPLICADOS ==========
+                            # Verificar si el producto ya existe comparando art y cod
+                            producto_existente = None
+                            
+                            # Buscar por artículo si existe
+                            if art:
+                                producto_existente = Producto.obtener('art', art)
+                            
+                            # Si no se encontró por artículo, buscar por código si existe
+                            if not producto_existente and cod:
+                                producto_existente = Producto.obtener('cod', cod)
+                            
+                            # Si el producto ya existe, agregarlo a la lista de duplicados y continuar
+                            if producto_existente:
+                                productos_duplicados.append({
+                                    'fila': row_num,
+                                    'art': art or 'N/A',
+                                    'cod': cod or 'N/A',
+                                    'desc': desc[:50] + '...' if len(desc) > 50 else desc,
+                                    'proveedor': prov_codigo
+                                })
+                                app.logger.info(f"Fila {row_num}: Producto duplicado detectado (art={art}, cod={cod})")
+                                continue
+                            
                             # DEBUG: Verificar valores antes de crear el producto
                             app.logger.debug(f"Fila {row_num} - Creando producto: art={art}, cod={cod}, tit={tit}, cat_id={cat_id}, img_id={img_id}, prov_id={prov_id}")
                             
@@ -261,12 +286,26 @@ def registrar_rutas_web(app):
                         if len(errores) > 5:
                             flash(f'... y {len(errores) - 5} errores más', 'warning')
                     
+                    # Mostrar información sobre productos duplicados
+                    if productos_duplicados:
+                        flash(f'Se detectaron {len(productos_duplicados)} productos duplicados que no fueron importados.', 'warning')
+                    
                     if productos_importados > 0:
                         flash(f'Se importaron {productos_importados} productos correctamente.', 'success')
-                        return redirect(url_for('productos', mensaje=f'Se importaron {productos_importados} productos correctamente.'))
+                        # Pasar la lista de duplicados al template
+                        return render_template('subir_productos.html', 
+                                             productos_importados=productos_importados,
+                                             productos_duplicados=productos_duplicados,
+                                             errores=errores)
                     else:
-                        flash('No se pudo importar ningún producto. Revisa los errores.', 'error')
-                        return redirect(request.url)
+                        if productos_duplicados:
+                            # Si solo hay duplicados, mostrarlos
+                            return render_template('subir_productos.html',
+                                                 productos_duplicados=productos_duplicados,
+                                                 errores=errores)
+                        else:
+                            flash('No se pudo importar ningún producto. Revisa los errores.', 'error')
+                            return redirect(request.url)
                         
                 except Exception as e:
                     app.logger.error(f'Error al procesar archivo Excel: {str(e)}')
